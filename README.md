@@ -1,4 +1,4 @@
-![Stats](./profile/stats.svg)
+![Stats](https://github.com/lhwcv/lhwcv/blob/main/profile/stats.svg)
 
 <!--
 **lhwcv/lhwcv** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
