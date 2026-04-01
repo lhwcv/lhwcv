@@ -2,45 +2,48 @@ name: Update README cards
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" # Runs once daily at midnight
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
-      # 生成 SVG 卡片
-      - name: Generate stats SVG
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Generate stats card
         uses: readme-tools/github-readme-stats-action@v1
         with:
           card: stats
-          options: username=${{ github.repository_owner }}&show_icons=true&theme=radical&count_private=true
+          options: username=${{ github.repository_owner }}&show_icons=true
           path: profile/stats.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 安装专业 SVG 转换工具
-      - name: Install rsvg-convert
-        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
+      - name: Generate top languages card
+        uses: readme-tools/github-readme-stats-action@v1
+        with:
+          card: top-langs
+          options: username=${{ github.repository_owner }}&layout=compact&langs_count=6
+          path: profile/top-langs.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 转换为高清 PNG（绝对不报错）
-      - name: Convert SVG to PNG
-        run: |
-          rsvg-convert profile/stats.svg \
-            --format=png \
-            --width=500 \
-            --output=profile/stats.png
+      - name: Generate pin card
+        uses: readme-tools/github-readme-stats-action@v1
+        with:
+          card: pin
+          options: username=readme-tools&repo=github-readme-stats
+          path: profile/pin-readme-tools-github-readme-stats.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 提交并推送
-      - name: Commit and push
+      - name: Commit cards
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull
-          git add profile/*.png
-          git commit -m "Update stats PNG" || exit 0
+          git add profile/*.svg
+          git commit -m "Update README cards" || exit 0
           git push

@@ -1,4 +1,4 @@
-![GitHub Stats](profile/stats.png)
+![GitHub Stats](profile/stats.svg)
 
 
 <!--
